@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<!--
+  活动流 · 社团活动全流程智能体
+-->
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>活动流 · 社团活动全流程智能体</title>
+<link rel="stylesheet" href="/css/club-flow.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">活</div>
+    <div class="brand-text">
+      <h1>活动流</h1>
+      <p>社团 / 学生组织活动全流程智能体</p>
+    </div>
+  </div>
+
+  <div class="profile" id="profileChip" aria-live="polite">
+    <span class="profile-dot"></span>
+    <span class="profile-text">尚未填写活动信息</span>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn ghost" id="btnDemo" type="button">载入示例</button>
+    <button class="btn ghost" id="btnReset" type="button">清空</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="steps" aria-label="流程导航">
+    <button class="step is-active" data-tab="plan" type="button">
+      <span class="num">1</span>
+      <span class="step-text"><b>写策划</b><small>策划书 · 申请表 · 通知</small></span>
+      <span class="check" aria-hidden="true">✓</span>
+    </button>
+    <button class="step" data-tab="reg" type="button">
+      <span class="num">2</span>
+      <span class="step-text"><b>收报名</b><small>多表合并 · 自动汇总</small></span>
+      <span class="check" aria-hidden="true">✓</span>
+    </button>
+    <button class="step" data-tab="sum" type="button">
+      <span class="num">3</span>
+      <span class="step-text"><b>做总结</b><small>新闻稿 · 活动总结</small></span>
+      <span class="check" aria-hidden="true">✓</span>
+    </button>
+    <button class="step" data-tab="album" type="button">
+      <span class="num">4</span>
+      <span class="step-text"><b>活动图集</b><small>上传照片 · 导出图集</small></span>
+      <span class="check" aria-hidden="true">✓</span>
+    </button>
+
+    <div class="steps-foot">
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="流程完成度">
+        <span id="progressBar"></span>
+      </div>
+      <small id="progressText">流程完成度 0%</small>
+      <p class="hint">所有数据仅保存在本机浏览器，不上传服务器、不联网。</p>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ============ ① 策划 ============ -->
+    <section class="panel is-active" id="panel-plan" aria-labelledby="planTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="planTitle">① 写策划</h2>
+          <p>填几项活动需求，自动产出策划书、场地申请表、活动通知、执行手册和报名表模板。</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn ghost" id="btnFillDemo" type="button">填入示例需求</button>
+          <button class="btn primary" id="btnGenPlan" type="button">生成全部文档 →</button>
+        </div>
+      </div>
+
+      <form class="card form" id="planForm" autocomplete="off">
+        <fieldset>
+          <legend>基本信息</legend>
+          <label class="field span2">
+            <span>活动名称 <i>*</i></span>
+            <input id="p-name" name="name" placeholder="例：春日读书分享会" required>
+          </label>
+          <label class="field">
+            <span>活动类型</span>
+            <select id="p-type" name="type">
+              <option>讲座</option>
+              <option selected>沙龙</option>
+              <option>比赛</option>
+              <option>演出</option>
+              <option>志愿服务</option>
+              <option>团建</option>
+              <option>招新</option>
+              <option>培训</option>
+              <option>展览</option>
+              <option>其他</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>主办单位 <i>*</i></span>
+            <input id="p-org" name="org" placeholder="例：星海文学社">
+          </label>
+          <label class="field">
+            <span>协办 / 指导单位</span>
+            <input id="p-coorg" name="coOrg" placeholder="例：校团委、图书馆">
+          </label>
+          <label class="field">
+            <span>活动主题 / 口号</span>
+            <input id="p-theme" name="theme" placeholder="例：把春天读给你听">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>时间与地点</legend>
+          <label class="field">
+            <span>活动日期 <i>*</i></span>
+            <input id="p-date" name="date" type="date">
+          </label>
+          <label class="field">
+            <span>开始时间</span>
+            <input id="p-start" name="timeStart" type="time" value="19:00">
+          </label>
+          <label class="field">
+            <span>结束时间</span>
+            <input id="p-end" name="timeEnd" type="time" value="21:00">
+          </label>
+          <label class="field">
+            <span>活动地点 <i>*</i></span>
+            <input id="p-place" name="place" placeholder="例：图书馆三楼报告厅">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>规模与预算</legend>
+          <label class="field">
+            <span>预计参与人数</span>
+            <input id="p-scale" name="scale" type="number" min="1" step="1" value="60">
+          </label>
+          <label class="field">
+            <span>预算总额（元）</span>
+            <input id="p-budget" name="budget" type="number" min="0" step="10" value="800">
+          </label>
+          <label class="field">
+            <span>报名费（元 / 人，0 为免费）</span>
+            <input id="p-fee" name="fee" type="number" min="0" step="1" value="0">
+          </label>
+          <label class="field">
+            <span>报名截止</span>
+            <input id="p-deadline" name="registrationDeadline" type="date">
+          </label>
+          <label class="field span2">
+            <span>参与对象</span>
+            <input id="p-audience" name="audience" placeholder="例：全校热爱阅读的同学，限 60 人">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>内容与亮点</legend>
+          <label class="field span2">
+            <span>活动背景（可选）</span>
+            <textarea id="p-background" name="background" rows="2" placeholder="例：世界读书日所在的五月，同学们想分享好书却缺少一个轻松、不设门槛的场合。"></textarea>
+          </label>
+          <label class="field span2">
+            <span>活动目的与意义（可选）</span>
+            <textarea id="p-purpose" name="purpose" rows="2" placeholder="例：让爱读书的人彼此看见，也让社团在学期中段完成一次有质量的会员活动。"></textarea>
+          </label>
+          <label class="field span2">
+            <span>活动亮点（每行一条）</span>
+            <textarea id="p-highlights" name="highlights" rows="3" placeholder="嘉宾对谈&#10;自由换书角&#10;手写书签 DIY"></textarea>
+          </label>
+          <label class="field">
+            <span>拟邀请嘉宾</span>
+            <input id="p-guests" name="guests" placeholder="例：文学院 李老师、往届社长">
+          </label>
+          <label class="field">
+            <span>奖品设置</span>
+            <input id="p-prizes" name="prizes" placeholder="例：一等奖 1 名 图书礼包">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>场地与联系</legend>
+          <label class="field">
+            <span>负责人</span>
+            <input id="p-contactName" name="contactName" placeholder="例：林小雨">
+          </label>
+          <label class="field">
+            <span>联系电话</span>
+            <input id="p-contactPhone" name="contactPhone" placeholder="例：13800001111">
+          </label>
+          <label class="field span2 checkline">
+            <input type="checkbox" id="p-needVenue" name="needVenue" checked>
+            <span>需要申请校内场地（自动生成场地使用申请表）</span>
+          </label>
+          <label class="field span2">
+            <span>场地设备需求（每行一条）</span>
+            <textarea id="p-venueNeeds" name="venueNeeds" rows="2" placeholder="投影 + 话筒 ×2&#10;可移动桌椅 60 套"></textarea>
+          </label>
+        </fieldset>
+      </form>
+
+      <div class="result is-hidden" id="planResult">
+        <div class="doc-tabs" id="planTabs" role="tablist"></div>
+        <div class="doc-toolbar">
+          <span class="doc-title" id="planDocTitle"></span>
+          <div class="doc-tools">
+            <button class="btn" id="btnPlanExport" type="button">导出 DOCX</button>
+            <button class="btn" id="btnPlanXlsx" type="button">导出报名表 XLSX</button>
+            <button class="btn ghost" id="btnPlanPrint" type="button">打印 / 存 PDF</button>
+          </div>
+        </div>
+        <article class="paper" id="planPreview"></article>
+      </div>
+    </section>
+
+    <!-- ============ ② 报名 ============ -->
+    <section class="panel" id="panel-reg" aria-labelledby="regTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="regTitle">② 收报名</h2>
+          <p>把收集到的报名表（Excel / CSV，可多份）拖进来，自动对齐列、去重、统计分布并给出备货建议。</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn primary" id="btnSummarize" type="button">开始汇总 →</button>
+        </div>
+      </div>
+
+      <div class="card dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.txt" multiple hidden>
+        <div class="dz-icon" aria-hidden="true">⇪</div>
+        <p class="dz-title">拖拽报名表到这里，或 <button class="link" id="btnPick" type="button">选择文件</button></p>
+        <p class="muted">支持 .xlsx / .csv，可一次上传多份；列名不同、顺序不同也能自动对齐</p>
+        <button class="btn ghost sm" id="btnSampleReg" type="button">加载示例报名表（2 份 · 共 60+ 条）</button>
+      </div>
+
+      <div class="sources" id="sourceList"></div>
+
+      <div class="result is-hidden" id="regResult">
+        <div class="kpis" id="kpis"></div>
+
+        <div class="charts" id="charts"></div>
+
+        <div class="insight-grid">
+          <div class="card">
+            <h3><span aria-hidden="true">◆</span> 数据洞察</h3>
+            <ul class="bullets" id="insights"></ul>
+          </div>
+          <div class="card">
+            <h3><span aria-hidden="true">!</span> 数据质量提醒</h3>
+            <ul class="bullets warn" id="warnings"></ul>
+          </div>
+        </div>
+
+        <div class="card roster-card">
+          <div class="table-toolbar">
+            <h3>报名名单 <small id="rosterCount"></small></h3>
+            <div class="roster-tools">
+              <input id="rosterSearch" type="search" placeholder="搜索姓名 / 学号 / 学院">
+              <button class="btn primary" id="btnExportStats" type="button">导出汇总 XLSX</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data" id="rosterTable"></table>
+          </div>
+          <p class="table-foot" id="rosterFoot"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ③ 总结 ============ -->
+    <section class="panel" id="panel-sum" aria-labelledby="sumTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="sumTitle">③ 做总结</h2>
+          <p>把当天的流程、亮点、金句填进来（报名数据会自动带入），一键生成新闻稿、活动总结和社媒文案。</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn ghost" id="btnFillSample" type="button">填入示例素材</button>
+          <button class="btn primary" id="btnGenSummary" type="button">生成新闻稿与总结 →</button>
+        </div>
+      </div>
+
+      <form class="card form" id="sumForm" autocomplete="off">
+        <fieldset>
+          <legend>活动回顾</legend>
+          <label class="field">
+            <span>活动名称</span>
+            <input id="s-name" name="name" placeholder="自动带入策划">
+          </label>
+          <label class="field">
+            <span>活动日期</span>
+            <input id="s-date" name="date" type="date">
+          </label>
+          <label class="field">
+            <span>活动地点</span>
+            <input id="s-place" name="place">
+          </label>
+          <label class="field">
+            <span>主办单位</span>
+            <input id="s-org" name="org">
+          </label>
+          <label class="field">
+            <span>实际到场人数</span>
+            <input id="s-actual" name="actualCount" type="number" min="0" step="1" placeholder="可留空，按报名人数估算">
+          </label>
+          <label class="field">
+            <span>报名人数（自动统计）</span>
+            <input id="s-signup" name="signupCount" type="number" min="0" step="1" placeholder="可留空，按策划规模估算">
+          </label>
+          <label class="field span2">
+            <span>到场嘉宾 / 老师</span>
+            <input id="s-guests" name="guests" placeholder="例：校团委 王老师、文学院 李教授">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>现场素材（越具体，稿子越好）</legend>
+          <label class="field span2">
+            <span>当天流程（每行「时间 内容」）</span>
+            <textarea id="s-process" name="process" rows="5" placeholder="18:30 签到、领取书签&#10;19:00 主持人开场&#10;19:10 嘉宾分享"></textarea>
+          </label>
+          <label class="field span2">
+            <span>现场亮点（每行一条）</span>
+            <textarea id="s-highlights" name="highlights" rows="3" placeholder="换书角 40 本书全部换出&#10;有同学现场朗读原创诗"></textarea>
+          </label>
+          <label class="field span2">
+            <span>嘉宾 / 参与者金句（每行「姓名：内容」）</span>
+            <textarea id="s-quotes" name="quotes" rows="3" placeholder="李老师：读书是与陌生人最温柔的相遇"></textarea>
+          </label>
+          <label class="field span2">
+            <span>参与者反馈 / 问卷结果</span>
+            <textarea id="s-feedback" name="feedback" rows="2" placeholder="回收问卷 45 份，满意度 4.8/5"></textarea>
+          </label>
+          <label class="field span2">
+            <span>颁奖 / 成果</span>
+            <input id="s-awards" name="awards" placeholder="例：评选 3 位最佳分享人">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>复盘与经费</legend>
+          <label class="field">
+            <span>预算（元）</span>
+            <input id="s-budget" name="budgetPlan" type="number" min="0" step="1">
+          </label>
+          <label class="field">
+            <span>实际支出（元）</span>
+            <input id="s-budgetActual" name="budgetActual" type="number" min="0" step="1">
+          </label>
+          <label class="field span2">
+            <span>遇到的问题（每行一条，可留空）</span>
+            <textarea id="s-issues" name="issues" rows="2" placeholder="签到排队较长&#10;后排收音不清"></textarea>
+          </label>
+          <label class="field span2">
+            <span>改进措施（每行一条，与问题对应）</span>
+            <textarea id="s-improvements" name="improvements" rows="2" placeholder="提前 20 分钟开放签到&#10;增加手持麦"></textarea>
+          </label>
+          <label class="field">
+            <span>供稿人</span>
+            <input id="s-contactName" name="contactName">
+          </label>
+          <label class="field">
+            <span>摄影</span>
+            <input id="s-contactPhone" name="contactPhone" placeholder="例：摄影社 张一">
+          </label>
+        </fieldset>
+      </form>
+
+      <div class="result is-hidden" id="sumResult">
+        <div class="doc-tabs" id="sumTabs" role="tablist"></div>
+        <div class="doc-toolbar">
+          <span class="doc-title" id="sumDocTitle"></span>
+          <div class="doc-tools">
+            <button class="btn" id="btnSumExport" type="button">导出 DOCX</button>
+            <button class="btn ghost" id="btnSumCopy" type="button">复制文案</button>
+            <button class="btn ghost" id="btnSumPrint" type="button">打印 / 存 PDF</button>
+          </div>
+        </div>
+        <article class="paper" id="sumPreview"></article>
+      </div>
+    </section>
+
+    <!-- ============ ④ 活动图集 ============ -->
+    <section class="panel" id="panel-album" aria-labelledby="albumTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="albumTitle">④ 活动图集</h2>
+          <p>上传活动现场照片，填写图注与署名，自动排成 A4 图集，可导出 Word 或打印成 PDF。</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn ghost" id="btnAlbumClear" type="button">清空照片</button>
+          <button class="btn primary" id="btnGenAlbum" type="button">生成图集 →</button>
+        </div>
+      </div>
+
+      <div class="card dropzone" id="albumDrop">
+        <input type="file" id="albumInput" accept="image/*" multiple hidden>
+        <div class="dz-icon" aria-hidden="true">▣</div>
+        <p class="dz-title">拖拽照片到这里，或 <button class="link" id="btnAlbumPick" type="button">选择照片</button></p>
+        <p class="muted">支持 JPG / PNG / WebP，可一次多选 · 图片只在本机处理，不会上传服务器</p>
+      </div>
+
+      <div class="card form is-hidden" id="albumForm">
+        <fieldset>
+          <legend>图集设置</legend>
+          <label class="field">
+            <span>每页照片数</span>
+            <select id="albumLayout">
+              <option value="1">1 张（大图）</option>
+              <option value="2" selected>2 张（推荐）</option>
+              <option value="3">3 张</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>摄影署名</span>
+            <input id="albumCredit" placeholder="例：摄影社 张一">
+          </label>
+          <label class="field span2">
+            <span>图集前言（可选）</span>
+            <textarea id="albumIntro" rows="2" placeholder="例：5 月 20 日晚，星海文学社在图书馆三楼报告厅举办春日读书分享会，60 余位同学一起读书、换书、聊书。"></textarea>
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="album-list" id="albumList"></div>
+      <p class="table-foot is-hidden" id="albumHint"></p>
+
+      <div class="result is-hidden" id="albumResult">
+        <div class="doc-toolbar">
+          <span class="doc-title" id="albumDocTitle"></span>
+          <div class="doc-tools">
+            <button class="btn" id="btnAlbumExport" type="button">导出 PDF</button>
+            <button class="btn ghost" id="btnAlbumPrint" type="button">打印 / 存 PDF</button>
+          </div>
+        </div>
+        <article class="paper" id="albumPreview"></article>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">
+  <span>活动流 · 文档与数据均在本机生成</span>
+  <span>策划 → 申请 → 通知 → 报名 → 汇总 → 新闻稿 → 总结 → 图集</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/scripts/sample-data.js"></script>
+<script src="/scripts/zip.js"></script>
+<script src="/scripts/xlsx.js"></script>
+<script src="/scripts/docx.js"></script>
+<script src="/scripts/plan.js"></script>
+<script src="/scripts/stats.js"></script>
+<script src="/scripts/summary.js"></script>
+<script src="/scripts/gallery.js"></script>
+<script src="/scripts/pdf.js"></script>
+<script src="/scripts/app.js"></script>
+</body>
+</html>
